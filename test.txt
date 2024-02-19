@@ -1,0 +1,26 @@
+ @Test
+    public void testDeleteCustomer() {
+        // Assuming there's a customer with ID 1
+        String deleteUrl = baseUrl + "/1"; // Adjust the URL as per your API path
+        restTemplate.delete(deleteUrl);
+
+        Customer response = restTemplate.getForObject(baseUrl + "/1", Customer.class);
+        assertNull(response, "Customer should be null after deletion");
+    }
+
+    @Test
+    public void testUpdateCustomer() {
+        // Assuming there's a customer with ID 1
+        Customer updatedCustomer = new Customer("UpdatedName", "UpdatedLastName", 12345);
+        updatedCustomer.setId(1); // Set the ID to match the customer you're updating
+
+        HttpEntity<Customer> requestEntity = new HttpEntity<>(updatedCustomer);
+        ResponseEntity<Customer> responseEntity = restTemplate.exchange(baseUrl + "/1", HttpMethod.PUT, requestEntity, Customer.class); // Adjust the URL as per your API path
+
+        Customer response = responseEntity.getBody();
+
+        assertNotNull(response, "Response should not be null");
+        assertEquals("UpdatedName", response.getCname(), "Customer name should be updated");
+        assertEquals("UpdatedLastName", response.getLname(), "Customer last name should be updated");
+    }
+}
